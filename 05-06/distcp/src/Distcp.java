@@ -11,7 +11,7 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.fs.Path
 
-object Distcp {
+public class Distcp {
   def main(args: Array[String]): Unit = {
     type OptionMap = Map[Symbol, Any]
     if (args.length == 0) println("hhhhhh")

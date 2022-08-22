@@ -1,7 +1,7 @@
 import org.apache.spark.SparkConf
 import org.apache.spark.SparkContext
 
-object index {
+public class WorldIndex {
   def main(args: Array[String]): Unit = {
     val sparkConf = new SparkConf().setAppName("bingbing").setMaster("local[1]")
     val sc = new SparkContext(sparkConf)
