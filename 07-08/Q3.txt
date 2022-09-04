@@ -1,0 +1,29 @@
+# 实现自定义优化规则
+// scala
+class MultiplyOptimizationRule(spark: sparkSession) extends Rule[LogicalPlan] {
+	logWarning( msg = "MultiplyOptimizationRule Start")
+
+	def apply(plan: LogicalPlan): LogicalPlan = plan transformAllExpressions {
+		case Multiply(left, right, failOnError) if right.isInstanceOf[Literal] && right.asInstanceOf[Literal].value.asInstanceOf[Int] == 1=> left
+		case Multiply(left, right, failOnError) if left.isInstanceOf[Literal] && left.asInstanceOf[Literal].value.asInstanceOf[Int] == 1 => right
+	}
+}
+
+class MySparkSessionExtension extends (MySparkSessionExtensions => Unit) {
+	override def apply(extensions: MySparkSessionExtensions): Unit = {
+		extensions.injectOptimizerRule {
+			session => new MultiplyOptimizationRule(session)
+		}
+	}
+}
+
+
+
+bin/spark-sql --jars my.jar --conf spark.sql.extensions=com.jikeshijian.MySparkSessionExtension
+
+set spark.sql.planChangeLog.level=WARN;
+
+
+CREATE TABLE t1(a1 INT, a2 INT) USING parquet;
+
+SELECT a1, a2*1 from t1;

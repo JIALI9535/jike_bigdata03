@@ -1,0 +1,33 @@
+# 第一问：为 Spark SQL 添加一条自定义命令
+#SHOW VERSION；
+#显示当前 Spark 版本和 Java 版本。
+
+
+#回答如下
+
+1、SqlBase.g4 添加语法规则
+
+2、Maven antlr4 插件编译规则
+
+SHOW VERSION //--SPARK-KEYWORD-LIST-STARTVERSION: 'VERSION' | 'V';
+
+3、增加 ShowVersionCommand 类
+case class ShowVersionCommand() extends LeafRunnableCommand {
+	override val output: Seq[Attribute] = Seq(AttributeReference("version", StringType)())
+	override def run(sparkSession: sparkSession): Seq[Row] = {
+		val sparkVersion = sparkSession.version
+		val javaVersion = System.getProperty("java.version")
+		val output = "Spark Version: %s, Java Version: %s".format(sparkVersion, javaVersion)
+		Seq(Row(output))
+	}
+}
+
+4、在 SparkSqlParser.scala 中添加 visitShowVersion 方法
+override def visitShowVersion(ctx: ShowVersionContext): LogicalPlan = withOrigin(ctx) {
+	ShowVersionCommand()
+}
+
+5、编译
+build/mvn clean package -DskipTests
+
+6、运行 bin/spark-sql，输入 show version;
