@@ -49,7 +49,7 @@ org.apache.spark.sql.catalyst.optimizer.RewritePredicateSubquery
 
 - 架构图
 
-  ![架构图](E:\code\practice\big_data\jike_bigdata03\graduation_design\业务架构图.webp)
+  ![架构图](业务架构图.webp)
 
 
 在 lambda 架构中，通过双线计算，用离线补充实时数据，完成整体数据输出+展示。
